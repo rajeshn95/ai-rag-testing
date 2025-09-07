@@ -12,3 +12,14 @@ This project will use the following stack:
 - [Drizzle ORM](https://orm.drizzle.team)
 - [Postgres](https://www.postgresql.org/) with [ pgvector ](https://github.com/pgvector/pgvector)
 - [shadcn-ui](https://ui.shadcn.com) and [TailwindCSS](https://tailwindcss.com) for styling
+
+-------
+
+1. Create a table in your database to store embeddings
+    - Cretae schema
+    - Run `pnpm db:push`
+2. Add logic to chunk and create embeddings when creating resources
+    - Create file and write the function": `lib/ai/embedding.ts`
+    - Use the AI SDK to create embeddings. This will require two more dependencies, which you can install by running the following command: `pnpm add ai @ai-sdk/react @ai-sdk/openai`
+3. Create an agent
+4. Give the agent tools to query / create resources for it’s knowledge base
