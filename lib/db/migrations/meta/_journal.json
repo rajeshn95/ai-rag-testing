@@ -8,6 +8,20 @@
       "when": 1719997972944,
       "tag": "0000_yielding_bloodaxe",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1757252288646,
+      "tag": "0001_sloppy_richard_fisk",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1757253946887,
+      "tag": "0002_friendly_matthew_murdock",
+      "breakpoints": true
     }
   ]
 }

@@ -1,6 +1,7 @@
 import { createResource } from '@/lib/actions/resources';
 // import { openai } from '@ai-sdk/openai';
-import { createOpenRouter } from '@openrouter/ai-sdk-provider';
+// import { createOpenRouter } from '@openrouter/ai-sdk-provider';
+import { google } from '@ai-sdk/google';
 import {
   convertToModelMessages,
   streamText,
@@ -16,17 +17,18 @@ export const maxDuration = 30;
 
 export async function POST(req: Request) {
   const { messages }: { messages: UIMessage[] } = await req.json();
-  const openrouter = createOpenRouter({
-    apiKey: env.OPENROUTER_API_KEY,
-  });
+  // const openrouter = createOpenRouter({
+  //   apiKey: env.OPENROUTER_API_KEY,
+  // });
 
   const result = streamText({
-    model: openrouter(env.OPENROUTER_MODEL, {
-      provider: {
-        // Ensure the selected upstream supports tool/function calling
-        require_parameters: true,
-      },
-    }), //openai('gpt-4o'),
+    model: google(env.GOOGLE_GENERATIVE_AI_MODEL),
+    // openrouter(env.OPENROUTER_MODEL, {
+    //   provider: {
+    //     // Ensure the selected upstream supports tool/function calling
+    //     require_parameters: true,
+    //   },
+    // }), //openai('gpt-4o'),
     messages: convertToModelMessages(messages),
     stopWhen: stepCountIs(5),
     system: `You are a helpful assistant. Check your knowledge base before answering any questions.

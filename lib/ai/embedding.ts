@@ -1,17 +1,18 @@
 import { embed, embedMany } from 'ai';
-import { createOpenAI } from '@ai-sdk/openai';
+// import { createOpenAI } from '@ai-sdk/openai';
+import { google } from '@ai-sdk/google';
 import { db } from '../db';
 import { cosineDistance, desc, gt, sql } from 'drizzle-orm';
 import { embeddings } from '../db/schema/embeddings';
 import { env } from '@/lib/env.mjs';
 
 // Configure OpenAI provider to route through OpenRouter for embeddings
-const openaiViaOpenRouter = createOpenAI({
-  baseURL: 'https://openrouter.ai/api/v1',
-  apiKey: env.OPENROUTER_API_KEY,
-});
+// const openaiViaOpenRouter = createOpenAI({
+//   baseURL: 'https://openrouter.ai/api/v1',
+//   apiKey: env.OPENROUTER_API_KEY,
+// });
 
-const embeddingModel = openaiViaOpenRouter.embedding(env.OPENROUTER_EMBEDDING_MODEL);
+const embeddingModel = google.textEmbedding(env.GOOGLE_GENERATIVE_AI_EMBEDDING_MODEL);
 
 // This function will take an input string and split it by periods, 
 // filtering out any empty items. This will return an array of strings. 
@@ -29,12 +30,18 @@ export const generateEmbeddings = async (
   value: string,
 ): Promise<Array<{ embedding: number[]; content: string }>> => {
   const chunks = generateChunks(value);
-  console.log("Hey chunks", chunks);
+
   const { embeddings } = await embedMany({
     model: embeddingModel,
     values: chunks,
+    providerOptions: {
+      google: {
+        outputDimensionality: 768,
+        taskType: 'RETRIEVAL_DOCUMENT',
+      },
+    },
   });
-  console.log("Hey embeddings embedMany", embeddings);
+
   return embeddings.map((e, i) => ({ content: chunks[i], embedding: e }));
 };
 
@@ -43,6 +50,12 @@ export const generateEmbedding = async (value: string): Promise<number[]> => {
   const { embedding } = await embed({
     model: embeddingModel,
     value: input,
+    providerOptions: {
+      google: {
+        outputDimensionality: 768,
+        taskType: 'RETRIEVAL_QUERY',
+      },
+    },
   });
   return embedding;
 };
