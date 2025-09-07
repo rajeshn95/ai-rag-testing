@@ -71,6 +71,19 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased; 
+  }
+}
+
+/* Fancy background utilities */
+@layer utilities {
+  .bg-grid {
+    background-image:
+      radial-gradient(circle at 25px 25px, hsl(var(--muted)) 1px, transparent 0),
+      linear-gradient(180deg, transparent 0%, hsl(var(--background)) 30%, hsl(var(--background)) 70%, transparent 100%),
+      radial-gradient(60% 120% at 100% 0%, rgba(168, 85, 247, 0.08) 0%, transparent 50%),
+      radial-gradient(60% 120% at 0% 0%, rgba(59, 130, 246, 0.08) 0%, transparent 50%);
+    background-size: 50px 50px, 100% 100%, 100% 100%, 100% 100%;
+    background-position: 0 0, 0 0, 0 0, 0 0;
   }
 }
