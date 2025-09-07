@@ -1,5 +1,6 @@
 import { createResource } from '@/lib/actions/resources';
-import { openai } from '@ai-sdk/openai';
+import { createOpenAI } from '@ai-sdk/openai';
+import { env } from '@/lib/env.mjs';
 import {
   convertToModelMessages,
   streamText,
@@ -13,11 +14,16 @@ import { findRelevantContent } from '@/lib/ai/embedding';
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
+const openrouter = createOpenAI({
+  apiKey: env.OPENROUTER_API_KEY,
+  baseURL: 'https://openrouter.ai/api/v1',
+});
+
 export async function POST(req: Request) {
   const { messages }: { messages: UIMessage[] } = await req.json();
-
+console.log(env.OPENROUTER_MODEL, messages);
   const result = streamText({
-    model: openai('gpt-4o'),
+    model: openrouter(env.OPENROUTER_MODEL),
     messages: convertToModelMessages(messages),
     stopWhen: stepCountIs(5),
     system: `You are a helpful assistant. Check your knowledge base before answering any questions.
@@ -43,6 +49,7 @@ export async function POST(req: Request) {
       }),
     },
   });
+  console.log(result);
 
   return result.toUIMessageStreamResponse();
 }

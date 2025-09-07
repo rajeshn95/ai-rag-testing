@@ -1,11 +1,17 @@
 import { embed, embedMany } from 'ai';
-import { openai } from '@ai-sdk/openai';
+import { createOpenAI } from '@ai-sdk/openai';
+import { env } from '@/lib/env.mjs';
 import { db } from '../db';
 import { cosineDistance, desc, gt, sql } from 'drizzle-orm';
 import { embeddings } from '../db/schema/embeddings';
 
-// Define the model to use for the embeddings
-const embeddingModel = openai.embedding('text-embedding-ada-002');
+// Define the model to use for the embeddings via OpenRouter
+const openrouter = createOpenAI({
+  apiKey: env.OPENROUTER_API_KEY,
+  baseURL: 'https://openrouter.ai/api/v1',
+});
+
+const embeddingModel = openrouter.embedding(env.OPENROUTER_EMBEDDING_MODEL);
 
 // This function will take an input string and split it by periods, 
 // filtering out any empty items. This will return an array of strings. 
